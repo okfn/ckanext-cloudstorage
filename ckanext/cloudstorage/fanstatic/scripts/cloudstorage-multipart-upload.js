@@ -39,7 +39,7 @@ ckan.module('cloudstorage-multipart-upload', function($, _) {
             });
             this._bar = $('<div>', {class:'bar'});
             this._progress.append(this._bar);
-            this._progress.insertAfter(this._url.parent().parent());
+            this._progress.insertAfter(this._save.parent().prev());
             this._resumeBtn = $('<a>', {class: 'hide btn btn-info controls'}).insertAfter(
                 this._progress).text('Resume Upload');
 
