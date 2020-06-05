@@ -279,6 +279,7 @@ ckan.module('cloudstorage-multipart-upload', function($, _) {
             formData.url_type = 'upload';
             var action = formData.id ? 'resource_update' : 'resource_create';
             var url = this._form.attr('action') || window.location.href;
+            window.scrollTo(0,0);
             this.sandbox.client.call(
                 'POST',
                 action,
