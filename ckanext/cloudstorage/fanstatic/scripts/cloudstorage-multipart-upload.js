@@ -297,9 +297,17 @@ ckan.module('cloudstorage-multipart-upload', function($, _) {
                     self._onPerformUpload(file);
                 },
                 function (err, st, msg) {
+                    var notification = msg
+                    try {
+                        if (err.responseJSON.error.__type === 'Validation Error') {
+                            notification = self._summariseError(err.responseJSON.error);
+                        }
+                    } catch(e) {
+                        notification = msg;
+                    }
                     self.sandbox.notify(
                         'Error',
-                        msg,
+                        notification,
                         'error'
                     );
                     self._onHandleError('Unable to save resource');
@@ -308,6 +316,15 @@ ckan.module('cloudstorage-multipart-upload', function($, _) {
 
         },
 
+        _summariseError: function(error) {
+            return Object.keys(error).map(function (key) {
+                if (key !== '__type') {
+                    return key + ': ' + error[key];
+                }
+            }).filter(function(el) {
+                return el != null;
+            }).join(', ');
+        },
 
         _onPerformUpload: function(file) {
             var id = this._id.val();
