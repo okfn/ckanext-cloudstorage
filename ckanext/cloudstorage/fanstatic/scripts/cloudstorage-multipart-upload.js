@@ -35,13 +35,19 @@ ckan.module('cloudstorage-multipart-upload', function($, _) {
             this._save = $('[name=save]');
             this._id = $('input[name=id]');
             this._progress = $('<div>', {
-                class: 'hide controls progress progress-striped active'
-            });
-            this._bar = $('<div>', {class:'bar'});
+                class: 'form-group controls progress active'
+            }).hide();
+            this._bar = $('<div>', {
+                class:'progress-bar progress-bar-striped',
+                role:'progressbar',
+                style: 'min-width:2em',
+            }).text('0%');
             this._progress.append(this._bar);
             this._progress.insertAfter(this._url.parent().parent());
-            this._resumeBtn = $('<a>', {class: 'hide btn btn-info controls'}).insertAfter(
-                this._progress).text('Resume Upload');
+            this._resumeBtn = $('<a>', {class: 'btn btn-info controls'})
+                .hide()
+                .insertAfter(this._progress)
+                .text('Resume Upload');
 
             var self = this;
 
@@ -153,7 +159,7 @@ ckan.module('cloudstorage-multipart-upload', function($, _) {
                 return false;
             }
 
-            this._setProgressType('info', this._progress);
+            this._setProgressType('info', this._bar);
             this._progress.show('slow');
         },
 
@@ -392,7 +398,6 @@ ckan.module('cloudstorage-multipart-upload', function($, _) {
                 data_dict,
                 function (data) {
 
-                    self._progress.hide('fast');
                     self._onDisableSave(false);
 
                     if (self._resourceId && self._packageId){
@@ -427,7 +432,7 @@ ckan.module('cloudstorage-multipart-upload', function($, _) {
                     self._onHandleError(self.i18n('unable_to_finish'));
                 }
             );
-            this._setProgressType('success', this._progress);
+            this._setProgressType('success', this._bar);
         },
 
         _onDisableSave: function (value) {
@@ -436,12 +441,13 @@ ckan.module('cloudstorage-multipart-upload', function($, _) {
 
         _setProgress: function (progress, bar) {
             bar.css('width', progress + '%');
+            bar.text(Math.round(progress) + '%');
         },
 
         _setProgressType: function (type, progress) {
             progress
-                .removeClass('progress-success progress-danger progress-info')
-                .addClass('progress-' + type);
+                .removeClass('progress-bar-success progress-bar-danger progress-bar-info')
+                .addClass('progress-bar-' + type);
         },
 
         _onHandleError: function (msg) {
