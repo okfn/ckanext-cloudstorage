@@ -5,8 +5,6 @@ ckan.module('cloudstorage-multipart-upload', function($, _) {
         options: {
             cloud: 'S3',
             i18n: {
-                resource_create: _('Resource has been created.'),
-                resource_update: _('Resource has been updated.'),
                 undefined_upload_id: _('Undefined uploadId.'),
                 upload_completed: _('Upload completed. You will be redirected in few seconds...'),
                 unable_to_finish: _('Unable to finish multipart upload')
@@ -296,11 +294,6 @@ ckan.module('cloudstorage-multipart-upload', function($, _) {
                     self._resourceId = result.id;
 
                     self._id.val(result.id);
-                    self.sandbox.notify(
-                        result.id,
-                        self.i18n(action, {id: result.id}),
-                        'success'
-                    );
                     self._onPerformUpload(file);
                 },
                 function (err, st, msg) {
@@ -401,11 +394,7 @@ ckan.module('cloudstorage-multipart-upload', function($, _) {
                     self._onDisableSave(false);
 
                     if (self._resourceId && self._packageId){
-                        self.sandbox.notify(
-                            'Success',
-                            self.i18n('upload_completed'),
-                            'success'
-                        );
+                        self._bar.text(self.i18n('upload_completed'))
                         // self._form.remove();
                         if (self._clickedBtn == 'again') {
                             this._redirect_url = self.sandbox.url(
