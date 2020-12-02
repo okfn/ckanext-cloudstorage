@@ -244,7 +244,7 @@ class ResourceCloudStorage(CloudStorage):
                 )
             else:
                 self.container.upload_object_via_stream(
-                    self.file_upload,
+                    iterator=(i for i in self.file_upload),
                     object_name=self.path_from_filename(
                         id,
                         self.filename
