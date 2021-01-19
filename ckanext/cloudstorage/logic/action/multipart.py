@@ -6,7 +6,6 @@ import datetime
 from pylons import config
 from sqlalchemy.orm.exc import NoResultFound
 import ckan.model as model
-import ckan.lib.helpers as h
 import ckan.plugins.toolkit as toolkit
 
 from ckanext.cloudstorage.storage import ResourceCloudStorage
@@ -67,7 +66,7 @@ def check_multipart(context, data_dict):
 
     """
 
-    h.check_access('cloudstorage_check_multipart', data_dict)
+    toolkit.check_access('cloudstorage_check_multipart', context, data_dict)
     id = toolkit.get_or_bust(data_dict, 'id')
     try:
         upload = model.Session.query(MultipartUpload).filter_by(
@@ -94,7 +93,7 @@ def initiate_multipart(context, data_dict):
 
     """
 
-    h.check_access('cloudstorage_initiate_multipart', data_dict)
+    toolkit.check_access('cloudstorage_initiate_multipart', context, data_dict)
     id, name, size = toolkit.get_or_bust(data_dict, ['id', 'name', 'size'])
     user_id = None
     if context['auth_user_obj']:
@@ -147,7 +146,7 @@ def initiate_multipart(context, data_dict):
 
 
 def upload_multipart(context, data_dict):
-    h.check_access('cloudstorage_upload_multipart', data_dict)
+    toolkit.check_access('cloudstorage_upload_multipart', context, data_dict)
     upload_id, part_number, part_content = toolkit.get_or_bust(
         data_dict, ['uploadId', 'partNumber', 'upload'])
 
@@ -184,7 +183,7 @@ def finish_multipart(context, data_dict):
 
     """
 
-    h.check_access('cloudstorage_finish_multipart', data_dict)
+    toolkit.check_access('cloudstorage_finish_multipart', context, data_dict)
     upload_id = toolkit.get_or_bust(data_dict, 'uploadId')
     save_action = data_dict.get('save_action', False)
     upload = model.Session.query(MultipartUpload).get(upload_id)
@@ -223,7 +222,7 @@ def finish_multipart(context, data_dict):
 
 
 def abort_multipart(context, data_dict):
-    h.check_access('cloudstorage_abort_multipart', data_dict)
+    toolkit.check_access('cloudstorage_abort_multipart', context, data_dict)
     id = toolkit.get_or_bust(data_dict, ['id'])
     uploader = ResourceCloudStorage({})
 
@@ -254,7 +253,7 @@ def clean_multipart(context, data_dict):
 
     """
 
-    h.check_access('cloudstorage_clean_multipart', data_dict)
+    toolkit.check_access('cloudstorage_clean_multipart', context, data_dict)
     uploader = ResourceCloudStorage({})
     delta = _get_max_multipart_lifetime()
     oldest_allowed = datetime.datetime.utcnow() - delta
